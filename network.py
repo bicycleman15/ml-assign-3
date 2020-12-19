@@ -68,7 +68,7 @@ class Network:
 
             # Run validation if possible
             if test_data:
-                print("Epoch {} : {} / {}".format(epoch,self.evaluate(test_data),n_test));
+                print("Epoch {} : {} / {}".format(epoch,self.evaluate(test_data), n_test));
             else:
                 print("Epoch {} complete".format(epoch))
             
