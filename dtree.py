@@ -108,20 +108,107 @@ def load_data(split='train'):
     y_data = data_array[:, -1]
     return X_data, y_data
 
+def run_predictions_on_data(X_data, root_node:Node):
+    predictions = []
+    for i in range(len(X_data)):
+        predictions.append(predict(X_data[i], root_node))
+    return np.array(predictions).astype(np.uint8)
+
+def find_accuracy(predictions, y_data):
+    mask = predictions == y_data
+    return sum(mask) / len(mask)
+
+############## TREE PRUNING ##########################
+
+def prune_tree(root_node:Node, path_to_node):
+    if len(path_to_node) == 0:
+        # remove its children
+        root_node.left_child = None
+        root_node.right_child = None
+        return
+    
+    if path_to_node[0] == 0:
+        path_to_node.pop(index=0)
+        prune_tree(root_node.left_child, path_to_node)
+    elif path_to_node[0] == 1:
+        path_to_node.pop(index=0)
+        prune_tree(root_node.right_child, path_to_node)
+    else:
+        assert False
+
+max_accuracy_obtained = 0
+def prone_one_step(master_root_node:Node, X_data, y_data):
+    global max_accuracy_obtained
+    max_accuracy_obtained = 0
+    path_to_node_to_remove = []
+    path_till_now = []
+
+    print("Running one prune step")
+    def dfs(root_node:Node):
+        if len(path_till_now) > 0:
+            left_child = root_node.left_child
+            root_node.left_child = None
+
+            predictions = run_predictions_on_data(X_data, master_root_node)
+            accuracy = find_accuracy(predictions, y_data)
+            
+            print(accuracy)
+
+            global max_accuracy_obtained
+            if accuracy > max_accuracy_obtained:
+                max_accuracy_obtained = accuracy
+                path_to_node_to_remove = path_till_now.copy()
+            
+            # add subtrees back
+            root_node.left_child = left_child
+        
+        # Try to prune left and right
+        path_till_now.append(0)
+        if root_node.left_child:
+            dfs(root_node.left_child)
+        path_till_now.pop()
+
+        path_till_now.append(1)
+        if root_node.right_child:
+            dfs(root_node.right_child)
+        path_till_now.pop()
+
+    # find accuracy over all
+    dfs(master_root_node)
+    
+    original_accuracy = find_accuracy(run_predictions_on_data(X_data, master_root_node), y_data)
+    print("Original accuracy is", original_accuracy)
+
+    if original_accuracy < max_accuracy_obtained:
+        # Prune the tree
+        prune_tree(master_root_node, path_to_node_to_remove)
+        print("Pruned tree once successfully!!")
+        return master_root_node, max_accuracy_obtained, 1
+    else:
+        # there is nothing to prune
+        return master_root_node, max_accuracy_obtained, 0
+
+def prune_tree_iterations(root_node:Node, X_data, y_data, max_iters=10):
+    i = 0
+    while i < max_iters:
+        root_node, accuracy, should_continue = prone_one_step(root_node, X_data, y_data)
+        print("Accuracy on val set after pruning is :", accuracy)
+        
+        if should_continue == 0:
+            return root_node
+        
+        i += 1
+
+##############################
 
 if __name__ == "__main__":
 
     X_train, y_train = load_data('train')
     X_val, y_val = load_data('val')
 
-    root_node = growTree(X_train, y_train, max_depth=15)
-
-    correct = 0
-    total = 0
-    for i in tqdm(range(len(X_val))):
-        if predict(X_val[i], root_node) == y_val[i]:
-            correct += 1
-        total += 1
+    root_node = growTree(X_train, y_train, max_depth=7)
+    print("initial acc is", find_accuracy(run_predictions_on_data(X_val, root_node), y_val))
+    root_node = prune_tree_iterations(root_node, X_val, y_val)
     
-    print(correct/total)
+    # print(correct/total)
     
