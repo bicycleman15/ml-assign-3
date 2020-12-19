@@ -13,6 +13,9 @@ class Node:
         if self.feature_index != -1:
             assert self.val_to_split is not None
 
+        self.left_child = None
+        self.right_child = None
+
     def assign_label(self, train_y):
         # Now calculate classifying label if we end up on this node
         y = train_y[self.data_indices]
