@@ -205,10 +205,18 @@ if __name__ == "__main__":
 
     X_train, y_train = load_data('train')
     X_val, y_val = load_data('val')
+    X_test, y_test = load_data('test')
 
-    root_node = growTree(X_train, y_train, max_depth=7)
-    print("initial acc is", find_accuracy(run_predictions_on_data(X_val, root_node), y_val))
-    root_node = prune_tree_iterations(root_node, X_val, y_val)
-    
+    for x in tqdm(range(21, 30)):
+        root_node = growTree(X_train, y_train, max_depth=x)
+        
+        train_accuracy = find_accuracy(run_predictions_on_data(X_train, root_node), y_train)
+        val_accuracy = find_accuracy(run_predictions_on_data(X_val, root_node), y_val)
+        test_accuracy = find_accuracy(run_predictions_on_data(X_test, root_node), y_test)
+
+        f = open("acc_vs_height.txt","a");
+        print("depth {} : train={:.5f} , val={:.5f}, test={:.5f}".format(x, train_accuracy, val_accuracy, test_accuracy), file=f)
+        print("depth {} : train={:.5f} , val={:.5f}, test={:.5f}".format(x, train_accuracy, val_accuracy, test_accuracy))
+        f.close()
     # print(correct/total)
     
