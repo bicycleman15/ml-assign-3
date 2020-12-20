@@ -20,3 +20,9 @@ depth 18 : train=0.86322 , val=0.84673, test=0.84746
 depth 19 : train=0.86682 , val=0.84961, test=0.85025
 depth 20 : train=0.86846 , val=0.85122, test=0.85139
 depth 21 : train=0.86944 , val=0.85178, test=0.85195
+depth 22 : train=0.87022 , val=0.85232, test=0.85240
+depth 23 : train=0.87058 , val=0.85262, test=0.85271
+depth 24 : train=0.87062 , val=0.85266, test=0.85273
+depth 25 : train=0.87062 , val=0.85266, test=0.85273
+depth 26 : train=0.94120 , val=0.89135, test=0.89124
+depth 27 : train=0.94122 , val=0.89132, test=0.89122

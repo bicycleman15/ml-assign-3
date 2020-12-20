@@ -75,7 +75,7 @@ def split_on_feature(feature_idx, val_to_split, data_X, data_y):
     indices_right = np.argwhere(data_X[:, feature_idx] > val_to_split).ravel()
     return indices_left, indices_right
 
-def growTree(data_X, data_y, parent=None, depth=0, max_depth=999, min_data=50):
+def growTree(data_X, data_y, parent=None, depth=0, max_depth=999, min_data=10):
     if is_pure_node(data_y) or depth == max_depth or data_X.shape[0] <= min_data:
         return Node(data_y, parent, feature_index=-1)
 
@@ -128,16 +128,18 @@ def prune_tree(root_node:Node, path_to_node):
         return
     
     if path_to_node[0] == 0:
-        path_to_node.pop(index=0)
+        path_to_node.pop(0)
         prune_tree(root_node.left_child, path_to_node)
     elif path_to_node[0] == 1:
-        path_to_node.pop(index=0)
+        path_to_node.pop(0)
         prune_tree(root_node.right_child, path_to_node)
     else:
         assert False
 
 max_accuracy_obtained = 0
+path_to_node_to_remove = []
 def prone_one_step(master_root_node:Node, X_data, y_data):
+    global path_to_node_to_remove
     global max_accuracy_obtained
     max_accuracy_obtained = 0
     path_to_node_to_remove = []
@@ -145,6 +147,7 @@ def prone_one_step(master_root_node:Node, X_data, y_data):
 
     print("Running one prune step")
     def dfs(root_node:Node):
+        # print(path_till_now)
         if len(path_till_now) > 0:
             left_child = root_node.left_child
             root_node.left_child = None
@@ -152,11 +155,12 @@ def prone_one_step(master_root_node:Node, X_data, y_data):
             predictions = run_predictions_on_data(X_data, master_root_node)
             accuracy = find_accuracy(predictions, y_data)
             
-            print(accuracy)
+            # print(accuracy)
 
             global max_accuracy_obtained
             if accuracy > max_accuracy_obtained:
                 max_accuracy_obtained = accuracy
+                global path_to_node_to_remove
                 path_to_node_to_remove = path_till_now.copy()
             
             # add subtrees back
@@ -175,28 +179,25 @@ def prone_one_step(master_root_node:Node, X_data, y_data):
 
     # find accuracy over all
     dfs(master_root_node)
-    
     original_accuracy = find_accuracy(run_predictions_on_data(X_data, master_root_node), y_data)
-    print("Original accuracy is", original_accuracy)
 
     if original_accuracy < max_accuracy_obtained:
         # Prune the tree
         prune_tree(master_root_node, path_to_node_to_remove)
-        print("Pruned tree once successfully!!")
+        print("Pruned tree once successfully.")
         return master_root_node, max_accuracy_obtained, 1
     else:
         # there is nothing to prune
+        print("Accuracy did not increase much, returning original tree.")
         return master_root_node, max_accuracy_obtained, 0
 
-def prune_tree_iterations(root_node:Node, X_data, y_data, max_iters=10):
+def prune_tree_iterations(root_node:Node, X_data, y_data, max_iters=20):
     i = 0
     while i < max_iters:
         root_node, accuracy, should_continue = prone_one_step(root_node, X_data, y_data)
-        print("Accuracy on val set after pruning is :", accuracy)
-        
+        # print("Accuracy on val set after pruning is :", accuracy)
         if should_continue == 0:
             return root_node
-        
         i += 1
 
 ##############################
@@ -207,14 +208,15 @@ if __name__ == "__main__":
     X_val, y_val = load_data('val')
     X_test, y_test = load_data('test')
 
-    for x in tqdm(range(21, 30)):
+    for x in tqdm(range(0, 35)):
         root_node = growTree(X_train, y_train, max_depth=x)
+        root_node = prune_tree_iterations(root_node, X_val, y_val)
         
         train_accuracy = find_accuracy(run_predictions_on_data(X_train, root_node), y_train)
         val_accuracy = find_accuracy(run_predictions_on_data(X_val, root_node), y_val)
         test_accuracy = find_accuracy(run_predictions_on_data(X_test, root_node), y_test)
 
-        f = open("acc_vs_height.txt","a");
+        f = open("acc_vs_height_prune_final.txt","a");
         print("depth {} : train={:.5f} , val={:.5f}, test={:.5f}".format(x, train_accuracy, val_accuracy, test_accuracy), file=f)
         print("depth {} : train={:.5f} , val={:.5f}, test={:.5f}".format(x, train_accuracy, val_accuracy, test_accuracy))
         f.close()
