@@ -37,7 +37,7 @@ class Network:
         return a
 
     def SGD(self, training_data, epochs, mini_batch_size, eta,
-            test_data=None, lr_update=None, early_stopping=False):
+            test_data=None, lr_update=None, early_stopping=False, max_iter_no_change=5):
 
         print("Starting training of network. architecure is",self.sizes)
         training_data = list(training_data)
@@ -48,6 +48,7 @@ class Network:
             n_test = len(test_data)
 
         prev_loss = 1e15
+        prev_cnt = 0
         for epoch in range(epochs):
 
             # Shuffle training data first for SGD
@@ -70,14 +71,21 @@ class Network:
             if test_data:
                 print("Epoch {} : test acc : {:.4f} | train acc : {:.4f} | lr : {:.5f} | ".format(epoch, self.evaluate(test_data, convert=False), self.evaluate(training_data, convert=True), eta), end='')
             else:
-                print("Epoch {} complete".format(epoch))
+                print("Epoch {} complete.".format(epoch), end=' | ')
 
             cur_loss = self.total_cost(training_data)
             print("loss : {:.5f}".format(cur_loss))
             if np.sum(abs(cur_loss - prev_loss)) <= 1e-5 and early_stopping:
-                print("Loss did not decrease much. Early Stopping.")
-                break
-            prev_loss = cur_loss
+                prev_cnt += 1
+                if prev_cnt == mx_iter_no_change:
+                    print("Loss did not decrease much. Early Stopping.")
+                    break
+                else:
+                    prev_cnt = 0
+                    prev_loss = cur_loss
+            else:
+                prev_cnt = 0
+                prev_loss = cur_loss
             
     def update_mini_batch(self, mini_batch, eta):
         sum_derivative_b = [np.zeros(b.shape) for b in self.biases]
@@ -127,7 +135,7 @@ class Network:
         
         return (all_derivatives_b, all_derivatives_w)
 
-    def evaluate(self, test_data, convert,yo=0):
+    def evaluate(self, test_data, convert):
         if convert == False:
             test_results = [(np.argmax(self.forward(x)), y)
                             for (x, y) in test_data]
@@ -136,10 +144,11 @@ class Network:
                             for (x, y) in test_data]
         return sum(int(x == y) for (x, y) in test_results) / len(test_data)
 
+    def run_predictions(self, test_data):
+        test_results = [np.argmax(self.forward(x)) for (x, y) in test_data]
+        return test_results
 
     def cost_derivative(self, output_activations, y):
-        """Return the vector of partial derivatives \partial C_x /
-        \partial a for the output activations."""
         return (output_activations - y)
 
     def total_cost(self, data, convert=False):

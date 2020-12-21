@@ -7,7 +7,7 @@ if __name__ == '__main__':
     train_path = 'decision_tree/train.csv'
     val_path = 'decision_tree/val.csv'
     test_path = 'decision_tree/test.csv'
-    question = '1'
+    question = '2'
     output_path = 'output-1.txt'
     # question, train_path, val_path, test_path, output_path = sys.argv[1:]
 
@@ -27,7 +27,7 @@ if __name__ == '__main__':
         f.close()
 
     elif question == '2':
-        root_node = growTree(X_train, y_train, max_depth=10)
+        root_node = growTree(X_train, y_train, max_depth=8)
         root_node = prune_tree_iterations(root_node, X_val, y_val)
 
         predictions = run_predictions_on_data(X_test, root_node)

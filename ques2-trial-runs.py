@@ -1,21 +1,25 @@
 from network import Network, lr_scheduler
-import mnist_loader
-training_data, testing_data = mnist_loader.kannada_loader()
+from mnist_loader import kannada_loader
+
+train_X = "kannada/X_train.npy"
+train_y = "kannada/y_train.npy"
+test_X = "kannada/X_test.npy"
+test_y = "kannada/y_test.npy"
+training_data, testing_data = kannada_loader(train_X, train_y, test_X, test_y)
 
 mid_layers = [1]
-architecture = [784, 500, 10]
+architecture = [784, 1, 10]
 num_epochs = 100
 mini_batch_size = 100
 lr = 0.5
 
 from time import time
-
 for mid in mid_layers:
     # architecture[1] = mid
     model = Network(sizes = architecture, activation='sigmoid')
 
     start = time()
-    model.SGD(training_data, num_epochs, mini_batch_size, lr, test_data=testing_data, lr_update=None)
+    model.SGD(training_data, num_epochs, mini_batch_size, lr, test_data=testing_data, early_stopping=True)
     duration = time() - start
     
     train_acc = model.evaluate(training_data, convert=True)
