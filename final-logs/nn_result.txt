@@ -24,3 +24,9 @@ mid=10 | train acc: 0.96792 | test acc: 0.87530 | time elapsed : 1598.15759
 mid=50 | train acc: 0.97355 | test acc: 0.89860 | time elapsed : 10098.78352
 mid=100 | train acc: 0.78167 | test acc: 0.72270 | time elapsed : 19096.16393
 mid=500 | train acc: 0.32397 | test acc: 0.31390 | time elapsed : 27103.15338
+
+MLP scikit-results relu structure.
+Training metrics:
+0.9976166666666667
+Testing metrics:
+0.9395

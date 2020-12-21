@@ -3,8 +3,8 @@ import mnist_loader
 training_data, testing_data = mnist_loader.kannada_loader()
 
 mid_layers = [1]
-architecture = [784, 100, 100, 10]
-num_epochs = 125
+architecture = [784, 500, 10]
+num_epochs = 100
 mini_batch_size = 100
 lr = 0.5
 

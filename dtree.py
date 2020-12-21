@@ -101,8 +101,8 @@ def predict(X, root_node:Node):
     else: 
         return predict(X, root_node.right_child)
 
-def load_data(split='train'):
-    data = pd.read_csv("decision_tree/{}.csv".format(split))
+def load_data(path_to_csv):
+    data = pd.read_csv(path_to_csv)
     data_array = np.array(data).astype(np.int32)
     X_data = data_array[:, :-1]
     y_data = data_array[:, -1]

@@ -8,16 +8,6 @@ from mnist_loader import vectorized_result
 
 class Network:
     def __init__(self, sizes, activation='sigmoid'):
-        """The list ``sizes`` contains the number of neurons in the
-        respective layers of the network.  For example, if the list
-        was [2, 3, 1] then it would be a three-layer network, with the
-        first layer containing 2 neurons, the second layer 3 neurons,
-        and the third layer 1 neuron.  The biases and weights for the
-        network are initialized randomly, using a Gaussian
-        distribution with mean 0, and variance 1.  Note that the first
-        layer is assumed to be an input layer, and by convention we
-        won't set any biases for those neurons, since biases are only
-        ever used in computing the outputs from later layers."""
         self.num_layers = len(sizes)
         self.sizes = sizes
 
@@ -48,14 +38,6 @@ class Network:
 
     def SGD(self, training_data, epochs, mini_batch_size, eta,
             test_data=None, lr_update=None, early_stopping=False):
-        """Train the neural network using mini-batch stochastic
-        gradient descent.  The ``training_data`` is a list of tuples
-        ``(x, y)`` representing the training inputs and the desired
-        outputs.  The other non-optional parameters are
-        self-explanatory.  If ``test_data`` is provided then the
-        network will be evaluated against the test data after each
-        epoch, and partial progress printed out.  This is useful for
-        tracking progress, but slows things down substantially."""
 
         print("Starting training of network. architecure is",self.sizes)
         training_data = list(training_data)
@@ -98,10 +80,6 @@ class Network:
             prev_loss = cur_loss
             
     def update_mini_batch(self, mini_batch, eta):
-        """Update the network's weights and biases by applying
-        gradient descent using backpropagation to a single mini batch.
-        The ``mini_batch`` is a list of tuples ``(x, y)``, and ``eta``
-        is the learning rate."""
         sum_derivative_b = [np.zeros(b.shape) for b in self.biases]
         sum_derivative_w = [np.zeros(w.shape) for w in self.weights]
 
@@ -116,10 +94,6 @@ class Network:
         self.biases = [b - (eta/len(mini_batch))*db for b, db in zip(self.biases, sum_derivative_b)]
 
     def backprop(self, x, y):
-        """Return a tuple ``(nabla_b, nabla_w)`` representing the
-        gradient for the cost function C_x.  ``nabla_b`` and
-        ``nabla_w`` are layer-by-layer lists of numpy arrays, similar
-        to ``self.biases`` and ``self.weights``."""
         all_derivatives_b = [np.zeros(b.shape) for b in self.biases]
         all_derivatives_w = [np.zeros(w.shape) for w in self.weights]
 
@@ -154,10 +128,6 @@ class Network:
         return (all_derivatives_b, all_derivatives_w)
 
     def evaluate(self, test_data, convert,yo=0):
-        """Return the number of test inputs for which the neural
-        network outputs the correct result. Note that the neural
-        network's output is assumed to be the index of whichever
-        neuron in the final layer has the highest activation."""
         if convert == False:
             test_results = [(np.argmax(self.forward(x)), y)
                             for (x, y) in test_data]
@@ -173,12 +143,6 @@ class Network:
         return (output_activations - y)
 
     def total_cost(self, data, convert=False):
-        """Return the total cost for the data set ``data``.  The flag
-        ``convert`` should be set to False if the data set is the
-        training data (the usual case), and to True if the data set is
-        the validation or test data.  See comments on the similar (but
-        reversed) convention for the ``accuracy`` method, above.
-        """
         cost = 0.0
         for x, y in data:
             a = self.forward(x)
