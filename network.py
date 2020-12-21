@@ -77,11 +77,10 @@ class Network:
             print("loss : {:.5f}".format(cur_loss))
             if np.sum(abs(cur_loss - prev_loss)) <= 1e-5 and early_stopping:
                 prev_cnt += 1
-                if prev_cnt == mx_iter_no_change:
+                if prev_cnt == max_iter_no_change:
                     print("Loss did not decrease much. Early Stopping.")
                     break
                 else:
-                    prev_cnt = 0
                     prev_loss = cur_loss
             else:
                 prev_cnt = 0

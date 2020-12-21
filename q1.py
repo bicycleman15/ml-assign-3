@@ -9,7 +9,9 @@ if __name__ == '__main__':
     test_path = 'decision_tree/test.csv'
     question = '2'
     output_path = 'output-1.txt'
-    # question, train_path, val_path, test_path, output_path = sys.argv[1:]
+    
+    print(sys.argv)
+    question, train_path, val_path, test_path, output_path = sys.argv[1:]
 
     X_train, y_train = load_data(train_path)
     X_val, y_val = load_data(val_path)

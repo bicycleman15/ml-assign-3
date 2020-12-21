@@ -1,5 +1,6 @@
 from network import Network, lr_scheduler
 from mnist_loader import kannada_loader
+import sys
 
 def parse_layers(layers):
     hidden = list(map(int, layers.split()))
@@ -14,17 +15,20 @@ if __name__ == '__main__':
     train_X = "kannada/X_train.npy"
     train_y = "kannada/y_train.npy"
     test_X = "kannada/X_test.npy"
-    test_y = "kannada/y_test.npy"
+    # test_y = "kannada/y_test.npy"
     output_path = "output-2.txt"
 
     batch_size = 100
-    hidden_layers = "50 30"
+    hidden_layers = "20 10"
     activation_type = "relu"
     num_epochs = 125
     lr = 0.5
 
-    training_data, testing_data = kannada_loader(train_X, train_y, test_X, test_y)
+    # train_X, train_y, test_X, output_path, batch_size, hidden_layers, activation_type = sys.argv[1:]
+
+    training_data, testing_data = kannada_loader(train_X, train_y, test_X)
     hidden_layers = parse_layers(hidden_layers)
+    batch_size = int(batch_size)
 
     model = Network(sizes=hidden_layers, activation=activation_type)
     model.SGD(  training_data, 

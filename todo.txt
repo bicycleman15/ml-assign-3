@@ -1,0 +1,3 @@
+1. find time for pruning that is best.
+2. find results for gridsearch model part.
+3. Make report.
