@@ -18,9 +18,9 @@ if __name__ == '__main__':
     output_path = "output-2.txt"
 
     batch_size = 100
-    hidden_layers = "20 10"
+    hidden_layers = "50 30"
     activation_type = "relu"
-    num_epochs = 5
+    num_epochs = 125
     lr = 0.5
 
     training_data, testing_data = kannada_loader(train_X, train_y, test_X, test_y)
