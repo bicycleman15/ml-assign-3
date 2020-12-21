@@ -46,7 +46,7 @@ def kannada_loader():
     testing_inputs = [np.reshape(x, (784, 1)) for x in X_test]
     testing_results = [int(y) for y in y_test]
 
-    training_data = zip(training_inputs, training_results)
-    testing_data = zip(testing_inputs, testing_results)
+    training_data = list(zip(training_inputs, training_results))
+    testing_data = list(zip(testing_inputs, testing_results))
 
     return training_data, testing_data

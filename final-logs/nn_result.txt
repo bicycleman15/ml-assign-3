@@ -1,0 +1,26 @@
+==============
+
+100, 100, 10 relu, it converged faster.
+Epoch 34 : test acc : 0.9399 | train acc : 0.9964 | lr : 0.50000 | loss : 0.00322
+Epoch 35 : test acc : 0.9390 | train acc : 0.9965 | lr : 0.50000 | loss : 0.00301
+Epoch 36 : test acc : 0.9387 | train acc : 0.9966 | lr : 0.50000 | loss : 0.00304
+
+100, 100, 10 sigmoid
+Epoch 124 : test acc : 0.9279 | train acc : 0.9916 | lr : 0.50000 | loss : 0.00805
+mid=1 | train acc: 0.99157 | test acc: 0.92790 | time elapsed : 1806.48353
+
+=================
+
+Train with adaptive lr
+mid=1 | train acc: 0.19510 | test acc: 0.19030 | time elapsed : 159.87008
+mid=10 | train acc: 0.96940 | test acc: 0.87980 | time elapsed : 1320.36127
+mid=50 | train acc: 0.97842 | test acc: 0.90360 | time elapsed : 4786.50310
+mid=100 | train acc: 0.98172 | test acc: 0.90660 | time elapsed : 6588.76487
+mid=500 | train acc: 0.10080 | test acc: 0.10040 | time elapsed : 30120.42461
+
+Train with fixed lr
+mid=1 | train acc: 0.20498 | test acc: 0.19650 | time elapsed : 500.14825
+mid=10 | train acc: 0.96792 | test acc: 0.87530 | time elapsed : 1598.15759
+mid=50 | train acc: 0.97355 | test acc: 0.89860 | time elapsed : 10098.78352
+mid=100 | train acc: 0.78167 | test acc: 0.72270 | time elapsed : 19096.16393
+mid=500 | train acc: 0.32397 | test acc: 0.31390 | time elapsed : 27103.15338

@@ -1,7 +1,0 @@
-depth 0 : train=0.48735 , val=0.48938, test=0.48614
-depth 1 : train=0.61463 , val=0.61543, test=0.61450
-depth 0 : train=0.48735 , val=0.48938, test=0.48614
-depth 1 : train=0.61463 , val=0.61543, test=0.61450
-depth 2 : train=0.64640 , val=0.64645, test=0.64693
-depth 3 : train=0.66615 , val=0.66669, test=0.66669
-depth 4 : train=0.67379 , val=0.67444, test=0.67477
